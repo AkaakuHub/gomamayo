@@ -11,29 +11,21 @@ def judge_gomamayo(content):
     if len(pro) != 0:
       pronounce.append(alk if alk != None else pro)
     # ☆等は読みが空白のため除去
-    
-  is_gomamayo = False
-  is_highlevel = False
+ 
+  res = "違います。"
 
   for i in range(len(pronounce) - 1):
     # 高次ゴママヨ
     for j in range(min(len(pronounce[i]), len(pronounce[i + 1]))-1):
       if pronounce[i][-2 - j : -1] == pronounce[i + 1][0 : j + 1]:
-        is_highlevel = True
+        res = "高次ゴママヨです。"
         break
         
     # 低次ゴママヨ
     if pronounce[i][-1] == pronounce[i+1][0]:
-      is_gomamayo = True
-
-  bool = is_gomamayo or is_highlevel
-  res = ""
-  if is_highlevel:
-    res = "高次ゴママヨです。"
-  elif is_gomamayo:
-    res = "ゴママヨです。"
+      res = "ゴママヨです。"
   
-  return (res if bool else "違います。", pronounce)
+  return (res, pronounce)
 
 if __name__ == '__main__':
   print(judge_gomamayo('ガーリック食った')) # => ('ゴママヨです。', ['ガーリック', 'クッ', 'タ'])
