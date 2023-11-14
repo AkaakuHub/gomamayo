@@ -1,5 +1,7 @@
 import MeCab
 import alkana
+import re
+import jaconv
 
 def judge_gomamayo(content):
   mecab = MeCab.Tagger()
@@ -7,16 +9,21 @@ def judge_gomamayo(content):
   pronounce = []
   goma_idx = []
   for line in m_result:
-    pro = line.split("\t")[1]
-    read = line.split("\t")[2]
-    part = line.split("\t")[4]
-    # 「今日は」->「きょうわ」となるようにする
-    # 基本はreadを採用だが、「は」を「wa」と呼ぶときは変える
-    word = pro if "助詞" in part else read
-    alk = alkana.get_kana(word.lower())
-    if len(pro) != 0:
-      pronounce.append(alk if alk != None else word)
-    # 記号等は読みが空白のため除去
+    origin = jaconv.kata2hira(line.split("\t")[0])
+    # originがひらがなだけならそのまま追加
+    if re.compile("[ぁ-ん]+").fullmatch(origin):
+      pronounce.append(origin)
+    else:
+      pro = jaconv.kata2hira(line.split("\t")[1])
+      read = jaconv.kata2hira(line.split("\t")[2])
+      part = line.split("\t")[4]
+      # 「今日は」->「きょうわ」となるようにする
+      # 基本はreadを採用だが、「は」を「wa」と呼ぶときは変える
+      word = pro if ("助詞" in part) or ("動詞" in part) else read
+      alk = alkana.get_kana(word.lower())
+      if len(pro) != 0:
+        pronounce.append(jaconv.kata2hira(alk) if alk != None else word)
+      # 記号等は読みが空白のため除去
 
   res = "違います。"
 
@@ -52,4 +59,4 @@ def judge_gomamayo(content):
   return (res, pronounce)
 
 if __name__ == '__main__':
-  print(judge_gomamayo('太鼓公募募集終了'))
+  print(judge_gomamayo('アリス「モモイ!ざくざくクランチチョコです!!!!ゴマモクで買いましょう!!!!!」'))
