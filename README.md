@@ -2,3 +2,9 @@
 
 # gomamayo
 Repository you use enjoying gomamayo.
+
+# 実装済み
+- ゴママヨ
+- 高次ゴママヨ
+- n項ゴママヨ
+- ゴママヨキャンセル
