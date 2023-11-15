@@ -7,8 +7,8 @@ def judge_gomamayo(content):
     pronounce = []
     for line in m_result:
         origin = jaconv.kata2hira(line.split("\t")[0])
-        # originがひらがなだけならそのまま追加
-        if re.compile("[ぁ-ん]+").fullmatch(origin):
+        # originが「は」を含まないひらがなだけ(「ましょう」等)ならそのまま追加
+        if ("は" not in origin) and re.compile("[ぁ-ん]+").fullmatch(origin):
             pronounce.append(origin)
         else:
             pro = jaconv.kata2hira(line.split("\t")[1])
