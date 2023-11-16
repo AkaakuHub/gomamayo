@@ -25,12 +25,20 @@ def judge_gomamayo(content):
     # ゴママヨキャンセルを確かめる(2単語からなる物のみ)
     # ひらがなの読みを用いる
     sub_content = "".join(pronounce)
+    sub_pronounce = []
     for i in range(len(sub_content)):
+        gomacan = False
         # i文字目を複製して挿入
         sub_word = sub_content[:i] + sub_content[i] + sub_content[i:]
         sub_result = mecab.parse(sub_word).splitlines()[:-1]
-        if len(sub_result) == 2:
-            sub_pronounce = [sub_result[0].split()[0], sub_result[1].split()[0]]
+        ct = 0
+        for line in sub_result:
+            w = line.split("\t")[0]
+            ct += len(w)
+            sub_pronounce.append(w)
+            if ct == i + 1:
+                gomacan = True
+        if gomacan:
             res = "ゴママヨキャンセルの可能性があります。"
             return (res, sub_pronounce)
 
